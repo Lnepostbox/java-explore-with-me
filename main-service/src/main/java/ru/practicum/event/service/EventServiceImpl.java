@@ -231,9 +231,9 @@ public class EventServiceImpl implements EventService {
             throw new ValidationException("Limit of requests for the event is reached.");
         }
         request.setStatus(Status.CONFIRMED);
-        if (confirmedRequests.equals((long) event.getParticipantLimit())) {
-            requestService.rejectAllByEventId(eventId);
-        }
+       // if (confirmedRequests.equals((long) event.getParticipantLimit())) {
+        //    requestService.rejectAllByEventId(eventId);
+       // }
         requestService.save(request);
         log.info("EventService: confirmEventRequestPrivate. RequestId {}.", requestId);
 
