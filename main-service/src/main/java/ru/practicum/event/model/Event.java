@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
-//@EqualsAndHashCode(exclude = "compilations")
 public class Event {
 
     @Id
