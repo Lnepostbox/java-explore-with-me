@@ -220,16 +220,16 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public RequestDto confirmEventRequestPrivate(long userId, long eventId, long requestId) {
-        Event event = getByIdAndThrow(eventId);
+        //Event event = getByIdAndThrow(eventId);
         Request request = requestService.getById(requestId);
-        if (event.getParticipantLimit() == 0 || !event.getRequestModeration()) {
+        /*if (event.getParticipantLimit() == 0 || !event.getRequestModeration()) {
             return RequestMapper.toRequestDto(request);
         }
         Long confirmedRequests = requestService.getConfirmed(eventId);
         if (confirmedRequests.equals((long) event.getParticipantLimit())) {
             log.info("Limit of requests for the event is reached.");
             throw new ValidationException("Limit of requests for the event is reached.");
-        }
+        }*/
         request.setStatus(Status.CONFIRMED);
        // if (confirmedRequests.equals((long) event.getParticipantLimit())) {
         //    requestService.rejectAllByEventId(eventId);

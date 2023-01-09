@@ -97,9 +97,9 @@ public class RequestServiceImpl implements RequestService {
         }
         Status status;
         if (event.getRequestModeration()) {
-            status = Status.CONFIRMED;
-        } else {
             status = Status.PENDING;
+        } else {
+            status = Status.CONFIRMED;
         }
         Request request = Request.builder()
                 .status(status)
