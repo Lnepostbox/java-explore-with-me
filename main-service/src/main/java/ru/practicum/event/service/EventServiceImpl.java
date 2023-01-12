@@ -364,6 +364,12 @@ public class EventServiceImpl implements EventService {
         return results;
     }
 
+    @Override
+    public Event getEventByIdPrivate(long eventId) {
+        log.info("EventService: getEventByIdPrivate. EventId {}.", eventId);
+        return getByIdAndThrow(eventId);
+    }
+
     private Event getByIdAndThrow(long eventId) {
         return repository.findById(eventId).orElseThrow(() ->
                 new NotFoundException("Event {} doesn't exist.", eventId));
