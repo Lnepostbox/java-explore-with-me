@@ -1,9 +1,9 @@
 package ru.practicum.util;
 
 import org.springframework.stereotype.Component;
-//import java.time.LocalDate;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-//import java.time.LocalTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 @Component
@@ -19,11 +19,11 @@ public class DateFormatterCustom {
     }
 
     public LocalDateTime stringToDate(String dateTime) {
-        if (dateTime == null || dateTime.isBlank()) {
+        if (dateTime == null || dateTime.isBlank() || !dateTime.contains(" ")) {
             return null;
         }
-       // String[] lines = dateTime.split(" ");
-       // return LocalDateTime.of(LocalDate.parse(lines[0]), LocalTime.parse(lines[1]));
-        return (LocalDateTime) formatter.parse(dateTime);
+        String[] lines = dateTime.split(" ");
+        return LocalDateTime.of(LocalDate.parse(lines[0]), LocalTime.parse(lines[1]));
+        //return (LocalDateTime) formatter.parse(dateTime);
     }
 }
