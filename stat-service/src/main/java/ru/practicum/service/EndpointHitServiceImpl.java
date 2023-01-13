@@ -41,13 +41,13 @@ public class EndpointHitServiceImpl implements EndpointHitService {
         if (criteria.getUris() != null && !criteria.isUnique()) {
             endpointHits = endpointHitRepository
                     .findAllByTimestampBetweenAndUriIn(formatter.stringToDate(criteria.getStart()),
-                            formatter.stringToDate(criteria.getEnd()), List.of(criteria.getUris()));
+                            formatter.stringToDate(criteria.getEnd()), criteria.getUris());
         } else if (criteria.getUris() == null && criteria.isUnique()) {
             endpointHits = endpointHitRepository.findAllByUniqueIp(formatter.stringToDate(criteria.getStart()),
                     formatter.stringToDate(criteria.getEnd()));
         } else if (criteria.getUris() != null && criteria.isUnique()) {
             endpointHits = endpointHitRepository.findAllByUrisAndUniqueIp(formatter.stringToDate(criteria.getStart()),
-                    formatter.stringToDate(criteria.getEnd()), List.of(criteria.getUris()));
+                    formatter.stringToDate(criteria.getEnd()), criteria.getUris());
         } else {
             endpointHits = endpointHitRepository.findAllByTimestampBetween(formatter.stringToDate(criteria.getStart()),
                     formatter.stringToDate(criteria.getEnd()));

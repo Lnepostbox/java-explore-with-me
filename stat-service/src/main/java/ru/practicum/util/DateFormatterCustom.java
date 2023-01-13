@@ -19,10 +19,11 @@ public class DateFormatterCustom {
     }
 
     public LocalDateTime stringToDate(String dateTime) {
-        if (dateTime == null) {
-            return null;
-        }
-        String[] lines = dateTime.split(" ");
-        return LocalDateTime.of(LocalDate.parse(lines[0]), LocalTime.parse(lines[1]));
+        //if (dateTime == null) {
+         //   return null;
+       // }
+       // String[] lines = dateTime.split(" ");
+       // return LocalDateTime.of(LocalDate.parse(lines[0]), LocalTime.parse(lines[1]));
+        return (LocalDateTime) formatter.parse(dateTime);
     }
 }
