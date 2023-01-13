@@ -3,6 +3,7 @@ package ru.practicum.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -10,6 +11,6 @@ import lombok.Setter;
 public class StatViewForSpecific {
     private String start;
     private String end;
-    private String[] uris;
+    private List<String> uris;
     private boolean unique;
 }
