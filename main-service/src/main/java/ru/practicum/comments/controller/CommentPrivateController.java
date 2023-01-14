@@ -21,41 +21,45 @@ import java.util.List;
 public class CommentPrivateController {
     private final CommentsService commentService;
 
-    @GetMapping
-    public List<CommentDto> getAll(@PathVariable long userId,
-                                   @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") int from,
-                                   @Positive @RequestParam(value = "size", defaultValue = "10") int size) {
-        log.info("CommentPrivateController: getAll.");
-
-        return commentService.getAllPrivate(userId, from, size);
-    }
-
     @GetMapping("/{commentId}")
-    public CommentDto getByIdPrivate(@PathVariable long userId, @PathVariable long commentId) {
+    public CommentDto getByIdPrivate(@PathVariable long userId,
+                                     @PathVariable long commentId) {
         log.info("CommentPrivateController: getByIdPrivate.");
 
         return commentService.getByIdPrivate(userId, commentId);
     }
 
     @PostMapping
-    public CommentDto create(@PathVariable(value = "userId") @Positive long userId,
-                             @RequestBody @Valid NewCommentDto newCommentDto) {
-        log.info("CommentPrivateController: create.");
+    public CommentDto createPrivate(@PathVariable(value = "userId") @Positive long userId,
+                                    @RequestBody @Valid NewCommentDto newCommentDto) {
+        log.info("CommentPrivateController: createPrivate.");
 
-        return commentService.create(newCommentDto, userId);
+        return commentService.createPrivate(newCommentDto, userId);
+    }
+
+    @GetMapping
+    public List<CommentDto> getAllPrivate(@PathVariable long userId,
+                                          @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") int from,
+                                          @Positive @RequestParam(value = "size", defaultValue = "10") int size) {
+        log.info("CommentPrivateController: getAllPrivate.");
+
+        return commentService.getAllPrivate(userId, from, size);
     }
 
     @PatchMapping("/{commentId}")
-    public CommentDto updatePrivate(@PathVariable long userId, @PathVariable long commentId, @Valid @RequestBody UpdateCommentDto updateCommentDto) {
+    public CommentDto updatePrivate(@PathVariable long userId,
+                                    @PathVariable long commentId,
+                                    @Valid @RequestBody UpdateCommentDto updateCommentDto) {
         log.info("CommentPrivateController: updatePrivate.");
 
         return commentService.updatePrivate(userId, commentId, updateCommentDto);
     }
 
     @DeleteMapping("/{commentId}")
-    public void delete(@PathVariable long userId, @PathVariable long commentId) {
-        log.info("CommentPrivateController: delete.");
+    public void deletePrivate(@PathVariable long userId,
+                              @PathVariable long commentId) {
+        log.info("CommentPrivateController: deletePrivate.");
 
-        commentService.delete(userId, commentId);
+        commentService.deletePrivate(userId, commentId);
     }
 }

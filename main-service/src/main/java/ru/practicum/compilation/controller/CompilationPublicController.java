@@ -22,7 +22,7 @@ public class CompilationPublicController {
     public List<CompilationDto> getAll(@RequestParam(value = "pinned", required = false) Boolean pinned,
                                        @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") int from,
                                        @Positive @RequestParam(value = "size", defaultValue = "10") int size) {
-        log.info("CompilationPublicController: getAll.");
+        log.info("CompilationPublicController: getAllAdmin.");
 
         return compilationService.getAll(pinned, from, size);
     }

@@ -21,19 +21,6 @@ import java.util.List;
 public class CommentAdminController {
     private final CommentsService commentService;
 
-    @GetMapping
-    public List<CommentDto> getAll(
-            @RequestParam(required = false) Long[] users,
-            @RequestParam(required = false) Long[] events,
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
-            @PositiveOrZero @RequestParam(defaultValue = "0") int from,
-            @Positive @RequestParam(defaultValue = "10") int size) {
-        log.info("CommentAdminController: getAll.");
-
-        return commentService.getAllAdmin(users, events, rangeStart, rangeEnd, from, size);
-    }
-
     @GetMapping("/users/{userId}")
     public List<CommentDto> getAllByUserId(@PathVariable long userId) {
         log.info("CommentAdminController: getAllByUserId.");
@@ -48,10 +35,23 @@ public class CommentAdminController {
         return commentService.getAllByEventId(eventId);
     }
 
+    @GetMapping
+    public List<CommentDto> getAllAdmin(
+            @RequestParam(required = false) Long[] users,
+            @RequestParam(required = false) Long[] events,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
+            @PositiveOrZero @RequestParam(defaultValue = "0") int from,
+            @Positive @RequestParam(defaultValue = "10") int size) {
+        log.info("CommentAdminController: getAllAdmin.");
+
+        return commentService.getAllAdmin(users, events, rangeStart, rangeEnd, from, size);
+    }
+
     @PutMapping("/{commentId}")
-    public CommentDto update(@RequestBody UpdateCommentDto updateCommentDto,
-                             @PathVariable long commentId) {
-        log.info("CommentAdminController: update.");
+    public CommentDto updateAdmin(@RequestBody UpdateCommentDto updateCommentDto,
+                                  @PathVariable long commentId) {
+        log.info("CommentAdminController: updateAdmin.");
 
         return commentService.updateAdmin(commentId, updateCommentDto);
     }

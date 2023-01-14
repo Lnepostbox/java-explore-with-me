@@ -31,7 +31,7 @@ public class EventAdminController {
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
             @PositiveOrZero @RequestParam(defaultValue = "0") int from,
             @Positive @RequestParam(defaultValue = "10") int size) {
-        log.info("EventAdminController: getAll.");
+        log.info("EventAdminController: getAllAdmin.");
 
         return eventService.getAllByAdmin(users, states, categories, rangeStart,
                 rangeEnd, from, size);
@@ -39,7 +39,7 @@ public class EventAdminController {
 
     @PutMapping("/{eventId}")
     public FullEventDto update(@PathVariable long eventId, @RequestBody AdminUpdateEventRequest eventDto) {
-        log.info("EventAdminController: update.");
+        log.info("EventAdminController: updateAdmin.");
 
         return eventService.updateByAdmin(eventId, eventDto);
     }

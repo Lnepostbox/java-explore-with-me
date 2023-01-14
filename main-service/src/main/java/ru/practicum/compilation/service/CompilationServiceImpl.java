@@ -44,7 +44,7 @@ public class CompilationServiceImpl implements CompilationService {
         }
         Map<Long, Long> confirmedRequests = requestService.getCountConfirmedByEventsId(eventIds);
         Map<Long, Integer>  hitCounts = eventService.getHitCountsByEventIdSet(eventIds);
-        log.info("CompilationServiceImpl: getAll.");
+        log.info("CompilationService: getAllAdmin.");
 
         return compilations.stream()
                 .map((Compilation compilation) -> compilationMapper.toDto(compilation, confirmedRequests, hitCounts))
@@ -57,7 +57,7 @@ public class CompilationServiceImpl implements CompilationService {
         Set<Long> eventIds = compilation.getEvents().stream().map(eventMapper::toId).collect(Collectors.toSet());
         Map<Long, Long> confirmedRequests = requestService.getCountConfirmedByEventsId(eventIds);
         Map<Long, Integer>  hitCounts = eventService.getHitCountsByEventIdSet(eventIds);
-        log.info("CompilationServiceImpl: getById. CompilationId {}.", compilation);
+        log.info("CompilationService: getById. CompilationId {}.", compilation);
 
         return compilationMapper.toDto(compilation, confirmedRequests, hitCounts);
     }
@@ -72,7 +72,7 @@ public class CompilationServiceImpl implements CompilationService {
         Set<Long> eventIds = compilation.getEvents().stream().map(eventMapper::toId).collect(Collectors.toSet());
         Map<Long, Long> confirmedRequests = requestService.getCountConfirmedByEventsId(eventIds);
         Map<Long, Integer>  hitCounts = eventService.getHitCountsByEventIdSet(eventIds);
-        log.info("CompilationServiceImpl: create.");
+        log.info("CompilationService: create.");
 
         return compilationMapper.toDto(compilation, confirmedRequests, hitCounts);
     }
@@ -81,7 +81,7 @@ public class CompilationServiceImpl implements CompilationService {
     public void delete(long compilationId) {
         getByIdAndThrow(compilationId);
         compilationRepository.deleteById(compilationId);
-        log.info("Удалена подборка c id {}", compilationId);
+        log.info("CompilationService: delete. CompilationId {}.", compilationId);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class CompilationServiceImpl implements CompilationService {
     public void deleteEvent(long compilationId, long eventId) {
         Compilation compilation = getByIdAndThrow(compilationId);
         compilation.getEvents().remove(eventService.getById(eventId));
-        log.info("CompilationServiceImpl: deleteEvent. CompilationId {}, eventId {}", compilationId, eventId);
+        log.info("CompilationService: deleteEvent. CompilationId {}, eventId {}", compilationId, eventId);
     }
 
     @Override
@@ -97,7 +97,7 @@ public class CompilationServiceImpl implements CompilationService {
     public void createEvent(long compilationId, long eventId) {
         Compilation compilation = getByIdAndThrow(compilationId);
         compilation.getEvents().add(eventService.getById(eventId));
-        log.info("CompilationServiceImpl: createEvent. CompilationId {}, eventId {}", compilationId, eventId);
+        log.info("CompilationService: createEvent. CompilationId {}, eventId {}", compilationId, eventId);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class CompilationServiceImpl implements CompilationService {
     public void pin(long compilationId) {
         Compilation compilation = getByIdAndThrow(compilationId);
         compilation.setPinned(true);
-        log.info("CompilationServiceImpl: pin.");
+        log.info("CompilationService: pin.");
     }
 
     @Override
@@ -113,7 +113,7 @@ public class CompilationServiceImpl implements CompilationService {
     public void unpin(long compilationId) {
         Compilation compilation = getByIdAndThrow(compilationId);
         compilation.setPinned(false);
-        log.info("CompilationServiceImpl: unpin.");
+        log.info("CompilationService: unpin.");
     }
 
     private Compilation getByIdAndThrow(long compilationId) {

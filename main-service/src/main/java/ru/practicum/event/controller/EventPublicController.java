@@ -36,7 +36,7 @@ public class EventPublicController {
             @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
             @Positive @RequestParam(name = "size", defaultValue = "10") Integer size,
             HttpServletRequest request) {
-        log.info("EventPublicController: getAll.");
+        log.info("EventPublicController: getAllAdmin.");
         eventClient.addHit(request);
 
         return eventService.getAllPublic(text,

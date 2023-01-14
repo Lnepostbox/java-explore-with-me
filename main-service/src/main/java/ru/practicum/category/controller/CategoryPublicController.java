@@ -21,7 +21,7 @@ public class CategoryPublicController {
     @GetMapping
     public List<CategoryDto> getAll(@PositiveOrZero @RequestParam(value = "from", defaultValue = "0") int from,
                                     @Positive @RequestParam(value = "size", defaultValue = "10") int size) {
-        log.info("CategoryPublicController: getAll.");
+        log.info("CategoryPublicController: getAllAdmin.");
 
         return categoryService.getAll(from, size);
     }
