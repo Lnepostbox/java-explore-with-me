@@ -30,13 +30,13 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> getAll(List<Long> usersId, int from, int size) {
         Pageable pageable = PageRequest.of(from / size, size);
         if (usersId == null || usersId.isEmpty()) {
-            log.info("UserService: getAll for null or empty.");
+            log.info("UserService: getAllAdmin for null or empty.");
 
             return userRepository.findAll(pageable).stream()
                     .map(UserMapper::toUserDto)
                     .collect(Collectors.toList());
         } else {
-            log.info("UserService: getAll.");
+            log.info("UserService: getAllAdmin.");
 
             return userRepository.findAllById(usersId).stream()
                     .map(UserMapper::toUserDto)

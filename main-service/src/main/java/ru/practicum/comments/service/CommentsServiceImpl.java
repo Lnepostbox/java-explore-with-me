@@ -39,12 +39,30 @@ public class CommentsServiceImpl implements CommentsService {
 
     @Override
     @Transactional(readOnly = true)
-    public CommentDto getById(long commentId) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
-                new NotFoundException("Comment {} doesn't exist.", commentId));
-        log.info("CommentsService: getById. CommentId {}.", commentId);
+    public List<CommentDto> getAllByUserId(long userId) {
+        log.info("CommentsService: getAllByUserId. UserId {}.", userId);
 
-        return commentMapper.fromComment(comment);
+        return commentRepository.getAllByUserId(userId).stream()
+                .map(commentMapper::fromComment).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CommentDto> getAllByEventId(long eventId) {
+        log.info("CommentsService: getAllByEventId. EventId {}.", eventId);
+
+        return commentRepository.getAllByEventId(eventId).stream()
+                .map(commentMapper::fromComment).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CommentDto> getAllPrivate(long userId, int from, int size) {
+        Sort sort = Sort.sort(Comment.class).by(Comment::getCreatedOn).descending();
+        List<Comment> comments = commentRepository.findAllByUserId(userId, getPageable(from, size, sort));
+        log.info("CommentsService: getAllPrivate.");
+
+        return comments.stream().map(commentMapper::fromComment).collect(Collectors.toList());
     }
 
     @Override
@@ -53,11 +71,47 @@ public class CommentsServiceImpl implements CommentsService {
         Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
                 new NotFoundException("Comment {} doesn't exist.", commentId));
         if (userId != comment.getUser().getId()) {
-            throw new ValidationException("Requested comment made by another user.");
+            throw new ValidationException("Comment was made by another user.");
         }
         log.info("CommentsService: getByIdPrivate. CommentId {}.", commentId);
 
         return commentMapper.fromComment(comment);
+    }
+
+    @Override
+    @Transactional
+    public CommentDto createPrivate(NewCommentDto newCommentDto, long userId) {
+        User user = userService.getById(userId);
+        Event event = eventService.getEventByIdPrivate(newCommentDto.getEventId());
+        log.info("CommentsService: createPrivate.");
+        return commentMapper.fromComment(
+                commentRepository.save(commentMapper.fromNewCommentDto(newCommentDto, user, event))
+        );
+    }
+
+    @Override
+    public CommentDto updatePrivate(long userId, long commentId, UpdateCommentDto updateCommentDto) {
+        Optional<Comment> comment = commentRepository.findByIdAndUserId(userId, commentId);
+        if (comment.isEmpty()) {
+            throw new ValidationException("Comment with commentId and userId doesn't exist.");
+        }
+        if (userId != comment.get().getUser().getId()) {
+            throw new ValidationException("Comment can be updated only by author or administrator.");
+        }
+        comment.get().setText(updateCommentDto.getText());
+        log.info("CommentsService: updatePrivate. CommentId {}.", commentId);
+
+        return commentMapper.fromComment(commentRepository.save(comment.get()));
+    }
+
+    @Override
+    public void deletePrivate(long userId, long commentId) {
+        Optional<Comment> comment = commentRepository.findByIdAndUserId(commentId, userId);
+        if (comment.isEmpty()) {
+            throw new ValidationException("Comment with commentId and userId doesn't exist.");
+        }
+        commentRepository.deleteById(commentId);
+        log.info("CommentsService: delete. CommentId {}.", commentId);
     }
 
     @Override
@@ -87,79 +141,15 @@ public class CommentsServiceImpl implements CommentsService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<CommentDto> getAllByUserId(long userId) {
-        log.info("CommentsService: getAllByUserId. UserId {}.", userId);
-
-        return commentRepository.getAllByUserId(userId).stream()
-                .map(commentMapper::fromComment).collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<CommentDto> getAllByEventId(long eventId) {
-        log.info("CommentsService: getAllByEventId. EventId {}.", eventId);
-
-        return commentRepository.getAllByEventId(eventId).stream()
-                .map(commentMapper::fromComment).collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<CommentDto> getAllPrivate(long userId, int from, int size) {
-        Sort sort = Sort.sort(Comment.class).by(Comment::getCreatedOn).descending();
-        List<Comment> comments = commentRepository.findAllByUserId(userId, getPageable(from, size, sort));
-        log.info("CommentsService: getAllPrivate.");
-
-        return comments.stream().map(commentMapper::fromComment).collect(Collectors.toList());
-    }
-
-    @Override
-    public CommentDto updatePrivate(long userId, long commentId, UpdateCommentDto updateCommentDto) {
-        Optional<Comment> comment = commentRepository.findByIdAndUserId(userId, commentId);
-        if (comment.isEmpty()) {
-            throw new ValidationException("Comment with specified commentId and userId not found.");
-        }
-        if (userId != comment.get().getUser().getId()) {
-            throw new ValidationException("Comment can be updated only by author or administrator.");
-        }
-        comment.get().setText(updateCommentDto.getText());
-        log.info("CommentsService: updatePrivate. CommentId {}.", commentId);
-
-        return commentMapper.fromComment(commentRepository.save(comment.get()));
-    }
-
-    @Override
     public CommentDto updateAdmin(long commentId, UpdateCommentDto updateCommentDto) {
         Optional<Comment> comment = commentRepository.findById(commentId);
         if (comment.isEmpty()) {
-            throw new ValidationException("Comment with specified commentId and userId not found.");
+            throw new ValidationException("Comment with commentId and userId doesn't exist.");
         }
         comment.get().setText(updateCommentDto.getText());
         log.info("CommentsService: updateAdmin. CommentId {}.", commentId);
 
         return commentMapper.fromComment(commentRepository.save(comment.get()));
-    }
-
-    @Override
-    @Transactional
-    public CommentDto create(NewCommentDto newCommentDto, long userId) {
-        User user = userService.getById(userId);
-        Event event = eventService.getEventByIdPrivate(newCommentDto.getEventId());
-        log.info("CommentsService: add.");
-        return commentMapper.fromComment(
-                commentRepository.save(commentMapper.fromNewCommentDto(newCommentDto, user, event))
-        );
-    }
-
-    @Override
-    public void delete(long userId, long commentId) {
-        Optional<Comment> comment = commentRepository.findByIdAndUserId(commentId, userId);
-        if (comment.isEmpty()) {
-            throw new ValidationException("Comment with specified commentId and userId not found.");
-        }
-        commentRepository.deleteById(commentId);
-        log.info("CommentsService: delete. CommentId {}.", commentId);
     }
 
     private Pageable getPageable(int from, int size, Sort sort) {

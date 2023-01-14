@@ -23,6 +23,4 @@ public interface RequestService {
     RequestDto cancel(Long userId, Long requestId);
 
     void save(Request request);
-
-    void rejectAllByEventId(Long eventId);
 }

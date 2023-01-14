@@ -25,7 +25,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<CategoryDto> getAll(int from, int size) {
         List<Category> categories = categoryRepository.findAll(getPageable(from, size)).getContent();
-        log.info("CategoryServiceImpl: getAll.");
+        log.info("CategoryService: getAllAdmin.");
 
         return categories.stream()
                 .map(CategoryMapper::toCategoryDto)
@@ -35,7 +35,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto getById(long categoryId) {
         Category category = getByIdAndThrow(categoryId);
-        log.info("CategoryServiceImpl: getById. CategoryId {}.", categoryId);
+        log.info("CategoryService: getById. CategoryId {}.", categoryId);
 
         return CategoryMapper.toCategoryDto(category);
     }
@@ -45,7 +45,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto update(CategoryDto categoryDto) {
         Category category = getByIdAndThrow(categoryDto.getId());
         category.setName(categoryDto.getName());
-        log.info("CategoryServiceImpl: update.");
+        log.info("CategoryService: updateAdmin.");
 
         return CategoryMapper.toCategoryDto(category);
     }
@@ -54,7 +54,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public CategoryDto create(NewCategoryDto newCategoryDto) {
         Category category = categoryRepository.save(CategoryMapper.fromNewCategoryDto(newCategoryDto));
-        log.info("CategoryServiceImpl: create.");
+        log.info("CategoryService: create.");
 
         return CategoryMapper.toCategoryDto(category);
     }
@@ -64,7 +64,7 @@ public class CategoryServiceImpl implements CategoryService {
     public void delete(long categoryId) {
         getById(categoryId);
         categoryRepository.deleteById(categoryId);
-        log.info("CategoryServiceImpl: delete. CategoryId {}.", categoryId);
+        log.info("CategoryService: delete. CategoryId {}.", categoryId);
     }
 
     private Category getByIdAndThrow(Long categoryId) {

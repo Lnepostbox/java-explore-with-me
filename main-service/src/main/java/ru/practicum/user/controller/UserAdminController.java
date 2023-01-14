@@ -23,7 +23,7 @@ public class UserAdminController {
     public List<UserDto> getAll(@RequestParam(value = "ids", required = false) List<Long> ids,
                                 @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") int from,
                                 @Positive @RequestParam(value = "size", defaultValue = "10") int size) {
-        log.info("UserAdminController: getAll.");
+        log.info("UserAdminController: getAllAdmin.");
 
         return userService.getAll(ids, from, size);
     }

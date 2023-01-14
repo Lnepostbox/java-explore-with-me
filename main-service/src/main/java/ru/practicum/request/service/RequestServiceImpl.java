@@ -129,11 +129,4 @@ public class RequestServiceImpl implements RequestService {
         log.info("RequestService: save. Request {}.", request);
         requestRepository.save(request);
     }
-
-    @Override
-    public void rejectAllByEventId(Long eventId) {
-        log.info("RequestService: rejectAllByEventId. EventId {}.", eventId);
-        requestRepository.rejectAll(eventId);
-    }
-
 }
