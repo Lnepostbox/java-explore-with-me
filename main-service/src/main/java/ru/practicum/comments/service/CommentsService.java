@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface CommentsService {
 
-    CommentDto create(NewCommentDto comment, long userId);
-
     CommentDto getById(long commentId);
 
     CommentDto getByIdPrivate(long userId, long commentId);
@@ -23,9 +21,11 @@ public interface CommentsService {
 
     List<CommentDto> getAllByEventId(long eventId);
 
-    void delete(long userId, long commentId);
+    CommentDto create(NewCommentDto comment, long userId);
 
     CommentDto updatePrivate(long userId, long commentId, UpdateCommentDto updateCommentDto);
 
     CommentDto updateAdmin(long commentId, UpdateCommentDto updateCommentDto);
+
+    void delete(long userId, long commentId);
 }

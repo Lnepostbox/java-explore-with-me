@@ -38,17 +38,6 @@ public class CommentsServiceImpl implements CommentsService {
     private static final String DATE_TIME_STRING = "yyyy-MM-dd HH:mm:ss";
 
     @Override
-    @Transactional
-    public CommentDto create(NewCommentDto newCommentDto, long userId) {
-        User user = userService.getById(userId);
-        Event event = eventService.getEventByIdPrivate(newCommentDto.getEventId());
-        log.info("CommentsService: add.");
-        return commentMapper.fromComment(
-                commentRepository.save(commentMapper.fromNewCommentDto(newCommentDto, user, event))
-        );
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public CommentDto getById(long commentId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
@@ -116,16 +105,6 @@ public class CommentsServiceImpl implements CommentsService {
     }
 
     @Override
-    public void delete(long userId, long commentId) {
-        Optional<Comment> comment = commentRepository.findByIdAndUserId(commentId, userId);
-        if (comment.isEmpty()) {
-            throw new ValidationException("Comment with specified commentId and userId not found.");
-        }
-        commentRepository.deleteById(commentId);
-        log.info("CommentsService: delete. CommentId {}.", commentId);
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public List<CommentDto> getAllPrivate(long userId, int from, int size) {
         Sort sort = Sort.sort(Comment.class).by(Comment::getCreatedOn).descending();
@@ -160,6 +139,27 @@ public class CommentsServiceImpl implements CommentsService {
         log.info("CommentsService: updateAdmin. CommentId {}.", commentId);
 
         return commentMapper.fromComment(commentRepository.save(comment.get()));
+    }
+
+    @Override
+    @Transactional
+    public CommentDto create(NewCommentDto newCommentDto, long userId) {
+        User user = userService.getById(userId);
+        Event event = eventService.getEventByIdPrivate(newCommentDto.getEventId());
+        log.info("CommentsService: add.");
+        return commentMapper.fromComment(
+                commentRepository.save(commentMapper.fromNewCommentDto(newCommentDto, user, event))
+        );
+    }
+
+    @Override
+    public void delete(long userId, long commentId) {
+        Optional<Comment> comment = commentRepository.findByIdAndUserId(commentId, userId);
+        if (comment.isEmpty()) {
+            throw new ValidationException("Comment with specified commentId and userId not found.");
+        }
+        commentRepository.deleteById(commentId);
+        log.info("CommentsService: delete. CommentId {}.", commentId);
     }
 
     private Pageable getPageable(int from, int size, Sort sort) {
