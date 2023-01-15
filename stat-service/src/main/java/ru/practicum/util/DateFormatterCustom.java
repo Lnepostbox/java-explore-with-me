@@ -1,4 +1,4 @@
-package ru.practicum.utility;
+package ru.practicum.util;
 
 import org.springframework.stereotype.Component;
 import java.net.URLDecoder;

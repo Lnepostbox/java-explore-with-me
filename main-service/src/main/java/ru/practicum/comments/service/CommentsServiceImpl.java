@@ -17,7 +17,7 @@ import ru.practicum.exception.BadRequestException;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.user.model.User;
 import ru.practicum.user.service.UserService;
-import ru.practicum.utility.Constant;
+import ru.practicum.util.Constant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;

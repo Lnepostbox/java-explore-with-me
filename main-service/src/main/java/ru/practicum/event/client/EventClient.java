@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.event.dto.EndpointHitDto;
 import ru.practicum.event.dto.ViewStatsDto;
-import ru.practicum.utility.DateFormatterCustom;
+import ru.practicum.util.DateFormatterCustom;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
