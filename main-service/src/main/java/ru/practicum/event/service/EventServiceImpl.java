@@ -25,6 +25,7 @@ import ru.practicum.util.PageableRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -410,7 +411,7 @@ public class EventServiceImpl implements EventService {
     private List<LocalDateTime> eventDatePreparation(LocalDateTime rangeStart, LocalDateTime rangeEnd) {
         LocalDateTime startDate = LocalDateTime.now().truncatedTo(ChronoUnit.MICROS);
         LocalDateTime endDate = LocalDateTime.parse("5000-01-01 00:00:00",
-                Constant.DATE_TIME_FORMAT);
+                DateTimeFormatter.ofPattern(Constant.DATE_TIME_STRING));
         if (rangeStart != null) {
             startDate = rangeStart;
         }
