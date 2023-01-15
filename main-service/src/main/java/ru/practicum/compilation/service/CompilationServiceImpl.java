@@ -16,7 +16,7 @@ import ru.practicum.event.model.Event;
 import ru.practicum.event.service.EventService;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.request.service.RequestService;
-import ru.practicum.utility.PageableRequest;
+import ru.practicum.util.PageableRequest;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
