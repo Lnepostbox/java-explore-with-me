@@ -1,4 +1,4 @@
-package ru.practicum.util;
+package ru.practicum.utility;
 
 import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;

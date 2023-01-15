@@ -85,6 +85,20 @@ public class ErrorHandler {
                 .build();
     }
 
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleBadRequestException(final BadRequestException e) {
+        log.info("Exception: {}.", e.toString());
+
+        return ApiError.builder()
+                .errors(e.getStackTrace())
+                .message(e.getMessage())
+                .reason(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .status(HttpStatus.BAD_REQUEST.toString())
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {

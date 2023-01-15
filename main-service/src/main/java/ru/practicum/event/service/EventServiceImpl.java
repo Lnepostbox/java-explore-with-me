@@ -20,7 +20,8 @@ import ru.practicum.request.model.Request;
 import ru.practicum.request.model.Status;
 import ru.practicum.request.service.RequestService;
 import ru.practicum.user.service.UserService;
-import ru.practicum.util.PageableRequest;
+import ru.practicum.utility.Constant;
+import ru.practicum.utility.PageableRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -39,8 +40,6 @@ public class EventServiceImpl implements EventService {
     private final RequestService requestService;
     private final EventClient eventClient;
     private final EventMapper eventMapper;
-
-    private static final String DATE_TIME_STRING = "yyyy-MM-dd HH:mm:ss";
 
     @Override
     public List<FullEventDto> getAllByAdmin(Long[] users, String[] states, Long[] categories,
@@ -412,7 +411,7 @@ public class EventServiceImpl implements EventService {
     private List<LocalDateTime> eventDatePreparation(LocalDateTime rangeStart, LocalDateTime rangeEnd) {
         LocalDateTime startDate = LocalDateTime.now().truncatedTo(ChronoUnit.MICROS);
         LocalDateTime endDate = LocalDateTime.parse("5000-01-01 00:00:00",
-                DateTimeFormatter.ofPattern(DATE_TIME_STRING));
+                DateTimeFormatter.ofPattern(String.valueOf(Constant.DATE_TIME_FORMAT)));
         if (rangeStart != null) {
             startDate = rangeStart;
         }

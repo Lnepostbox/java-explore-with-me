@@ -1,5 +1,6 @@
 package ru.practicum.comments.service;
 
+import org.springframework.data.domain.Pageable;
 import ru.practicum.comments.dto.CommentDto;
 import ru.practicum.comments.dto.NewCommentDto;
 import ru.practicum.comments.dto.UpdateCommentDto;
@@ -12,7 +13,7 @@ public interface CommentsService {
 
     List<CommentDto> getAllByEventId(long eventId);
 
-    List<CommentDto> getAllPrivate(long userId, int from, int size);
+    List<CommentDto> getAllPrivate(long userId, Pageable pageable);
 
     CommentDto getByIdPrivate(long userId, long commentId);
 
@@ -23,7 +24,7 @@ public interface CommentsService {
     void deletePrivate(long userId, long commentId);
 
     List<CommentDto> getAllAdmin(Long[] users, Long[] events,
-                                 LocalDateTime rangeStart, LocalDateTime rangeEnd, int from, int size);
+                                 LocalDateTime rangeStart, LocalDateTime rangeEnd, Pageable pageable);
 
     CommentDto updateAdmin(long commentId, UpdateCommentDto updateCommentDto);
 }

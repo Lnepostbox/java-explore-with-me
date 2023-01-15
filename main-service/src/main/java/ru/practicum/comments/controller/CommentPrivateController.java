@@ -2,6 +2,7 @@ package ru.practicum.comments.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.comments.dto.CommentDto;
@@ -43,7 +44,7 @@ public class CommentPrivateController {
                                           @Positive @RequestParam(value = "size", defaultValue = "10") int size) {
         log.info("CommentPrivateController: getAllPrivate.");
 
-        return commentService.getAllPrivate(userId, from, size);
+        return commentService.getAllPrivate(userId, PageRequest.of(from / size, size));
     }
 
     @PatchMapping("/{commentId}")
