@@ -19,7 +19,6 @@ import ru.practicum.user.model.User;
 import ru.practicum.user.service.UserService;
 import ru.practicum.util.Constant;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -115,7 +114,7 @@ public class CommentsServiceImpl implements CommentsService {
                                         LocalDateTime rangeStart, LocalDateTime rangeEnd, Pageable pageable) {
         LocalDateTime startDate = LocalDateTime.now().truncatedTo(ChronoUnit.MICROS);
         LocalDateTime endDate = LocalDateTime.parse("5000-01-01 00:00:00",
-                DateTimeFormatter.ofPattern(String.valueOf(Constant.DATE_TIME_FORMAT)));
+                Constant.DATE_TIME_FORMAT);
         if (rangeStart != null) {
             startDate = rangeStart;
         }
