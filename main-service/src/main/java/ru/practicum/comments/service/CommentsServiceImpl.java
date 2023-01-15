@@ -3,7 +3,6 @@ package ru.practicum.comments.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.comments.dto.CommentDto;
@@ -14,11 +13,11 @@ import ru.practicum.comments.model.Comment;
 import ru.practicum.comments.storage.CommentRepository;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.service.EventService;
+import ru.practicum.exception.BadRequestException;
 import ru.practicum.exception.NotFoundException;
-import ru.practicum.exception.ValidationException;
 import ru.practicum.user.model.User;
 import ru.practicum.user.service.UserService;
-import ru.practicum.util.PageableRequest;
+import ru.practicum.utility.Constant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -34,8 +33,6 @@ public class CommentsServiceImpl implements CommentsService {
     private final CommentMapper commentMapper;
     private final EventService eventService;
     private final UserService userService;
-
-    private static final String DATE_TIME_STRING = "yyyy-MM-dd HH:mm:ss";
 
     @Override
     @Transactional(readOnly = true)
@@ -57,9 +54,8 @@ public class CommentsServiceImpl implements CommentsService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CommentDto> getAllPrivate(long userId, int from, int size) {
-        Sort sort = Sort.sort(Comment.class).by(Comment::getCreatedOn).descending();
-        List<Comment> comments = commentRepository.findAllByUserId(userId, getPageable(from, size, sort));
+    public List<CommentDto> getAllPrivate(long userId, Pageable pageable) {
+        List<Comment> comments = commentRepository.findAllByUserId(userId, pageable);
         log.info("CommentsService: getAllPrivate.");
 
         return comments.stream().map(commentMapper::fromComment).collect(Collectors.toList());
@@ -71,7 +67,7 @@ public class CommentsServiceImpl implements CommentsService {
         Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
                 new NotFoundException("Comment {} doesn't exist.", commentId));
         if (userId != comment.getUser().getId()) {
-            throw new ValidationException("Comment was made by another user.");
+            throw new BadRequestException("Comment was made by another user.");
         }
         log.info("CommentsService: getByIdPrivate. CommentId {}.", commentId);
 
@@ -79,7 +75,6 @@ public class CommentsServiceImpl implements CommentsService {
     }
 
     @Override
-    @Transactional
     public CommentDto createPrivate(NewCommentDto newCommentDto, long userId) {
         User user = userService.getById(userId);
         Event event = eventService.getEventByIdPrivate(newCommentDto.getEventId());
@@ -93,10 +88,10 @@ public class CommentsServiceImpl implements CommentsService {
     public CommentDto updatePrivate(long userId, long commentId, UpdateCommentDto updateCommentDto) {
         Optional<Comment> comment = commentRepository.findByIdAndUserId(userId, commentId);
         if (comment.isEmpty()) {
-            throw new ValidationException("Comment with commentId and userId doesn't exist.");
+            throw new BadRequestException("Comment with commentId and userId doesn't exist.");
         }
         if (userId != comment.get().getUser().getId()) {
-            throw new ValidationException("Comment can be updated only by author or administrator.");
+            throw new BadRequestException("Comment can be updated only by author or administrator.");
         }
         comment.get().setText(updateCommentDto.getText());
         log.info("CommentsService: updatePrivate. CommentId {}.", commentId);
@@ -108,7 +103,7 @@ public class CommentsServiceImpl implements CommentsService {
     public void deletePrivate(long userId, long commentId) {
         Optional<Comment> comment = commentRepository.findByIdAndUserId(commentId, userId);
         if (comment.isEmpty()) {
-            throw new ValidationException("Comment with commentId and userId doesn't exist.");
+            throw new BadRequestException("Comment with commentId and userId doesn't exist.");
         }
         commentRepository.deleteById(commentId);
         log.info("CommentsService: delete. CommentId {}.", commentId);
@@ -117,10 +112,10 @@ public class CommentsServiceImpl implements CommentsService {
     @Override
     @Transactional(readOnly = true)
     public List<CommentDto> getAllAdmin(Long[] users, Long[] events,
-                                        LocalDateTime rangeStart, LocalDateTime rangeEnd, int from, int size) {
+                                        LocalDateTime rangeStart, LocalDateTime rangeEnd, Pageable pageable) {
         LocalDateTime startDate = LocalDateTime.now().truncatedTo(ChronoUnit.MICROS);
         LocalDateTime endDate = LocalDateTime.parse("5000-01-01 00:00:00",
-                DateTimeFormatter.ofPattern(DATE_TIME_STRING));
+                DateTimeFormatter.ofPattern(String.valueOf(Constant.DATE_TIME_FORMAT)));
         if (rangeStart != null) {
             startDate = rangeStart;
         }
@@ -128,11 +123,10 @@ public class CommentsServiceImpl implements CommentsService {
             endDate = rangeEnd;
         }
         if (startDate.isAfter(endDate)) {
-            throw new ValidationException("Start can't be after End.");
+            throw new BadRequestException("Start can't be after End.");
         }
-        Sort sort = Sort.sort(Comment.class).by(Comment::getCreatedOn).descending();
         List<Comment> comments = commentRepository.findAllByUsersAndEvents(users, events,
-                startDate, endDate, getPageable(from, size, sort));
+                startDate, endDate, pageable);
         log.info("CommentsService: getAllAdmin.");
 
         return comments.stream()
@@ -144,15 +138,11 @@ public class CommentsServiceImpl implements CommentsService {
     public CommentDto updateAdmin(long commentId, UpdateCommentDto updateCommentDto) {
         Optional<Comment> comment = commentRepository.findById(commentId);
         if (comment.isEmpty()) {
-            throw new ValidationException("Comment with commentId and userId doesn't exist.");
+            throw new BadRequestException("Comment with commentId and userId doesn't exist.");
         }
         comment.get().setText(updateCommentDto.getText());
         log.info("CommentsService: updateAdmin. CommentId {}.", commentId);
 
         return commentMapper.fromComment(commentRepository.save(comment.get()));
-    }
-
-    private Pageable getPageable(int from, int size, Sort sort) {
-        return new PageableRequest(from, size, sort);
     }
 }

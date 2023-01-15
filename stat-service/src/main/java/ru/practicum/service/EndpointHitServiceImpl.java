@@ -9,7 +9,7 @@ import ru.practicum.dto.EndpointHitMapper;
 import ru.practicum.dto.ViewStatsDto;
 import ru.practicum.model.EndpointHit;
 import ru.practicum.model.StatViewForSpecific;
-import ru.practicum.util.DateFormatterCustom;
+import ru.practicum.utility.DateFormatterCustom;
 import java.math.BigInteger;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;

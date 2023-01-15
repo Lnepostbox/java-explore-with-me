@@ -2,6 +2,7 @@ package ru.practicum.comments.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +46,7 @@ public class CommentAdminController {
             @Positive @RequestParam(defaultValue = "10") int size) {
         log.info("CommentAdminController: getAllAdmin.");
 
-        return commentService.getAllAdmin(users, events, rangeStart, rangeEnd, from, size);
+        return commentService.getAllAdmin(users, events, rangeStart, rangeEnd, PageRequest.of(from / size, size));
     }
 
     @PutMapping("/{commentId}")

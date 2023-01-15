@@ -11,7 +11,7 @@ import ru.practicum.category.dto.NewCategoryDto;
 import ru.practicum.category.model.Category;
 import ru.practicum.category.storage.CategoryRepository;
 import ru.practicum.exception.NotFoundException;
-import ru.practicum.util.PageableRequest;
+import ru.practicum.utility.PageableRequest;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;

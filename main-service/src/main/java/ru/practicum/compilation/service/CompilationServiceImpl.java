@@ -16,15 +16,15 @@ import ru.practicum.event.model.Event;
 import ru.practicum.event.service.EventService;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.request.service.RequestService;
-import ru.practicum.util.PageableRequest;
+import ru.practicum.utility.PageableRequest;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor
 @Service
+@AllArgsConstructor
 @Slf4j
 public class CompilationServiceImpl implements CompilationService {
     private final EventService eventService;
